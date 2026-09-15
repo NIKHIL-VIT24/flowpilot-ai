@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: flowpilot
+      POSTGRES_USER: flowpilot
+      POSTGRES_PASSWORD: flowpilot_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - flowpilot_db:/var/lib/postgresql/data
+volumes:
+  flowpilot_db:
