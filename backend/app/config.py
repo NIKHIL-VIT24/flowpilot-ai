@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     shopify_client_id: str | None = None
     shopify_client_secret: str | None = None
     shopify_redirect_uri: str = "http://127.0.0.1:8000/api/integrations/shopify/callback"
+    seed_demo_data: bool = False
+    clear_demo_data: bool = False
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 settings = Settings()

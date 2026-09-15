@@ -16,6 +16,14 @@ from .services import encrypt_config, decrypt_config, generate_ai
 from pathlib import Path
 
 Base.metadata.create_all(engine)
+
+if settings.clear_demo_data:
+    from .clear_demo_data import clear as _clear_demo_data
+    _clear_demo_data()
+if settings.seed_demo_data:
+    from .seed_demo_data import seed as _seed_demo_data
+    _seed_demo_data()
+
 app = FastAPI(title=settings.app_name, version="1.0.0")
 app.add_middleware(CORSMiddleware, allow_origins=[settings.frontend_url, "http://localhost:8000"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 

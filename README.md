@@ -82,8 +82,16 @@ This repo includes a `Dockerfile` and a `render.yaml` Blueprint, so Render can b
    ```
 2. Go to https://dashboard.render.com, sign in, click **New > Blueprint**, and pick this GitHub repo. Render reads `render.yaml` and provisions both the web service and a free Postgres database automatically. `SECRET_KEY` and `ENCRYPTION_KEY` are generated for you.
 3. Once it's deployed, copy the live URL Render shows you (`https://your-app.onrender.com`), then in the service's **Environment** tab set `FRONTEND_URL` to that exact URL and save — Render will redeploy automatically.
-4. Open the live URL, register a real account (or reseed/clear demo data the same way as locally, using Render's Shell tab).
+4. Open the live URL and register your real account. To see it with sample data instead (or in addition), use the env-var-triggered seed described below — Render's free web service plan does not include shell/SSH access, so the local `python -m app.seed_demo_data` command won't work there directly.
 5. To connect real Google/Shopify integrations in production, add `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`/`SHOPIFY_CLIENT_ID`/`SHOPIFY_CLIENT_SECRET` as environment variables, and update each provider's OAuth app settings to use your live `https://your-app.onrender.com/api/integrations/.../callback` redirect URIs instead of `127.0.0.1`.
+
+### Seeding/clearing demo data without shell access
+
+On platforms like Render's free plan where there's no shell, set an environment variable on the service instead:
+
+- Add `SEED_DEMO_DATA=true` in the Environment tab and save. Render redeploys, and the app seeds the demo account (`demo@flowpilot.ai` / `Demo12345!`) once on startup — check the deploy logs for a "Demo data created." line.
+- When you're ready to remove it, set `CLEAR_DEMO_DATA=true` instead (and remove `SEED_DEMO_DATA`) and save. On the next boot it wipes the demo account.
+- After either one runs, set the variable back to blank/false so it doesn't repeat on every future restart (harmless either way since both are idempotent, but cleaner).
 
 **Worth knowing:** Render's free Postgres database expires 30 days after creation and is deleted — fine for testing, but before that window closes you'll want to upgrade it to a paid plan (starts around $6-7/month) from the Render dashboard so your real data isn't lost. The free web service also spins down after 15 minutes of inactivity and takes a few seconds to wake back up on the next request; upgrading the web service to a paid instance removes that cold start.
 
